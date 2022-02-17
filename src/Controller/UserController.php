@@ -42,7 +42,7 @@ class UserController extends AbstractController
     /**
      * @Route("/data", name="data_user", methods={"GET"})
      */
-    public function index(): Response
+    public function readUser(): Response
     {
         $user = $this->userRepository->findBy([], ['nickName' => 'ASC']);
 
