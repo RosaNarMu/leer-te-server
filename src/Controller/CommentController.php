@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Comment;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
@@ -41,12 +42,113 @@ class CommentController extends AbstractController
     }
 
     /**
-     * @Route("/comment", name="comment")
+     * @Route("/data", name="data_comment", methods={"GET"})
      */
-    public function index(): Response
+    public function readComment(): Response
     {
-        return $this->render('comment/index.html.twig', [
-            'controller_name' => 'CommentController',
-        ]);
+        $comment = $this->commentRepository->findBy([], ['publicationDate' => 'ASC']);
+
+        $result = [];
+
+        foreach ($comment as $comment) {
+            $result[] = [
+                'id' => $comment->getId(),
+                'content' => $comment->getContent(),
+                'publicationDate' => $comment->getPublicationDate(),
+                'score' => $comment->getScore(),
+                'User' => $comment->getUser(),
+                'Story ' => $comment->getStory(),
+            ];
+        }
+
+        return new JsonResponse($result);
+    }
+
+    /**
+     * @Route("/add", name="add_comment", methods={"POST"})
+     */
+
+    public function addComment(Request $request, UserRepository $userRepository, StoryRepository $storyRepository): Response
+    {
+        $content = json_decode($request->getContent(), true);
+
+        $user = $userRepository->findOneBy(['nickName' => $content['user']]);
+
+        $story = $storyRepository->findOneBy(['title' => $content['story']]);
+
+        $comment = new Comment();
+
+        $comment->setContent($content['content']);
+
+        $date = new \DateTime('@' . strtotime('now'));
+        $comment->setPublicationDate($date);
+
+        $comment->setScore($content['score']);
+
+        $comment->setUser($user);
+
+        $comment->setStory($story);
+
+        $this->em->persist($comment);
+
+        $this->em->flush();
+
+        return new JsonResponse(
+            [
+                'result' => 'ok',
+                'code' => 200,
+                'content' => $content
+
+            ]
+        );
+    }
+
+    /**
+     * @Route("/edit/{id}", name="edit_comment", methods={"PUT"})
+     */
+    public function update(Request $request, $id, UserRepository $userRepository, StoryRepository $storyRepository): Response
+    {
+        $content = json_decode($request->getContent(), true);
+        $comment = $this->commentRepository->find($id);
+
+
+        if (isset($content['content'])) {
+            $comment->setContent($content['content']);
+        }
+
+        if (isset($content['date'])) {
+            $date = new \DateTime('@' . strtotime('now'));
+            $comment->setPublicationDate($date);
+        }
+
+        if (isset($content['score'])) {
+            $comment->setScore($content['score']);
+        }
+
+        if (isset($content['user'])) {
+            $user = $userRepository->findOneBy(['nickName' => $content['user']]);
+            $comment->setUser($user);
+        }
+
+        if (isset($content['story'])) {
+            $story = $storyRepository->findOneBy(['title' => $content['story']]);
+            $comment->setStory($story);
+        }
+
+
+        $this->em->flush();
+
+        return new JsonResponse(['respuesta' => 'ok']);
+    }
+
+    /**
+     * @Route("/delete/{id}", name="delete_comment", methods={"DELETE"})
+     */
+    public function delete($id): Response
+    {
+        $comment = $this->commentRepository->find($id);
+        $this->em->remove($comment);
+        $this->em->flush();
+        return new JsonResponse(['respuesta' => 'ok']);
     }
 }
