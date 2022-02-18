@@ -128,13 +128,9 @@ class UserController extends AbstractController
             $user->setGoodReads($content['goodReads']);
         }
 
-        /* if (isset($content['birthDate'])) {
-
-            $builder->add('birthDate', DateType::class, [
-                'format' => 'yyyy-MM-dd'
-            ]);
-            $user->setBirthDate($builder);
-        } */
+        if (isset($content['birthDate'])) {
+            $user->setBirthDate(\DateTime::createFromFormat('Y-m-d', $content['birthDate']));
+        }
 
         $this->em->flush();
 

@@ -63,6 +63,25 @@ class StoryController extends AbstractController
         return new JsonResponse($result);
     }
 
+    /**
+     * @Route("/detail/{id}", name="detail_story", methods={"GET"})
+     */
+
+    public function detailStory(Request $request, $id): Response
+    {
+        $story = $this->storyRepository->find($id);
+
+        return new JsonResponse([
+            'id' => $story->getId(),
+            'title' => $story->getTitle(),
+            'content' => $story->getContent(),
+            'publicationDate' => $story->getPublicationDate(),
+            'User' => $story->getUser(),
+            'genre' => $story->getGenre(),
+            'published' => $story->getPublished()
+        ]);
+    }
+
 
     /**
      * @Route("/add", name="add_story", methods={"POST"})
