@@ -51,6 +51,7 @@ class StoryController extends AbstractController
         foreach ($story as $story) {
             $result[] = [
                 'id' => $story->getId(),
+                'title' => $story->getTitle(),
                 'content' => $story->getContent(),
                 'publicationDate' => $story->getPublicationDate(),
                 'User' => $story->getUser(),
@@ -75,7 +76,10 @@ class StoryController extends AbstractController
 
         $story = new Story();
 
+        $story->setTitle($content['title']);
+
         $story->setContent($content['content']);
+
         $date = new \DateTime('@' . strtotime('now'));
         $story->setPublicationDate($date);
 
@@ -97,5 +101,56 @@ class StoryController extends AbstractController
 
             ]
         );
+    }
+
+    /**
+     * @Route("/edit/{id}", name="edit_story", methods={"PUT"})
+     */
+    public function update(Request $request, $id, UserRepository $userRepository): Response
+    {
+        $content = json_decode($request->getContent(), true);
+        $story = $this->storyRepository->find($id);
+
+        if (isset($content['title'])) {
+            $story->setTitle($content['title']);
+        }
+
+        if (isset($content['content'])) {
+            $story->setContent($content['content']);
+        }
+
+        if (isset($content['date'])) {
+            $date = new \DateTime('@' . strtotime('now'));
+            $story->setPublicationDate($date);
+        }
+
+        if (isset($content['user'])) {
+            $user = $userRepository->findOneBy(['nickName' => $content['user']]);
+            $story->setUser($user);
+        }
+
+        if (isset($content['genre'])) {
+            $story->setGenre($content['genre']);
+        }
+
+        if (isset($content['published'])) {
+            $story->setPublished($content['published']);
+        }
+
+        $this->em->flush();
+
+        return new JsonResponse(['respuesta' => 'ok']);
+    }
+
+    /**
+     * @Route("/delete/{id}", name="delete_story", methods={"DELETE"})
+     */
+
+    public function delete($id): Response
+    {
+        $story = $this->storyRepository->find($id);
+        $this->em->remove($story);
+        $this->em->flush();
+        return new JsonResponse(['respuesta' => 'ok']);
     }
 }

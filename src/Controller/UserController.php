@@ -19,7 +19,9 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use App\Entity\Entrada;
 use App\Repository\CategoriaRepository;
 use App\Repository\EntradaRepository;
-
+use DateTime;
+use DateTimeInterface;
+use DateTimeZone;
 use Symfony\Component\String\Slugger\AsciiSlugger;
 
 
@@ -95,5 +97,59 @@ class UserController extends AbstractController
 
             ]
         );
+    }
+
+    /**
+     * @Route("/edit/{id}", name="edit_user", methods={"PUT"})
+     */
+    public function update(Request $request, $id, UserPasswordHasherInterface $passwordHasher): Response
+    {
+        $content = json_decode($request->getContent(), true);
+        $user = $this->userRepository->find($id);
+
+        if (isset($content['nickName'])) {
+            $user->setNickName($content['nickName']);
+        }
+
+        if (isset($content['email'])) {
+            $user->setEmail($content['email']);
+        }
+
+        if (isset($content['password'])) {
+            $simplePassword = ($content['password']);
+            $hashedPassword = $passwordHasher->hashPassword(
+                $user,
+                $simplePassword
+            );
+            $user->setPassword($hashedPassword);
+        }
+
+        if (isset($content['goodReads'])) {
+            $user->setGoodReads($content['goodReads']);
+        }
+
+        /* if (isset($content['birthDate'])) {
+
+            $builder->add('birthDate', DateType::class, [
+                'format' => 'yyyy-MM-dd'
+            ]);
+            $user->setBirthDate($builder);
+        } */
+
+        $this->em->flush();
+
+        return new JsonResponse(['respuesta' => 'ok']);
+    }
+
+    /**
+     * @Route("/delete/{id}", name="delete_user", methods={"DELETE"})
+     */
+
+    public function delete($id): Response
+    {
+        $user = $this->userRepository->find($id);
+        $this->em->remove($user);
+        $this->em->flush();
+        return new JsonResponse(['respuesta' => 'ok']);
     }
 }
