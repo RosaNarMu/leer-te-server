@@ -44,11 +44,7 @@ class StoryController extends AbstractController
      */
     public function options(): Response
     {
-        return new Response('', 200, [
-            'Access-Control-Allow-Origin' => '*',
-            'Access-Control-Allow-Credentials' => 'true',
-            'Access-Control-Allow-Headers' => 'Authorization'
-        ]);
+        return new Response('');
     }
 
     /**
@@ -72,9 +68,7 @@ class StoryController extends AbstractController
             ];
         }
 
-        return new JsonResponse($result, 200, [
-            'Access-Control-Allow-Origin' => '*'
-        ]);
+        return new JsonResponse($result);
     }
 
     /**
@@ -122,9 +116,7 @@ class StoryController extends AbstractController
             ];
         }
 
-        return new JsonResponse($result, 200, [
-            'Access-Control-Allow-Origin' => '*'
-        ]);
+        return new JsonResponse($result);
     }
 
 
