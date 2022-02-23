@@ -40,6 +40,18 @@ class StoryController extends AbstractController
     }
 
     /**
+     * @Route("", methods={"OPTIONS"})
+     */
+    public function options(): Response
+    {
+        return new Response('', 200, [
+            'Access-Control-Allow-Origin' => '*',
+            'Access-Control-Allow-Credentials' => 'true',
+            'Access-Control-Allow-Headers' => 'Authorization'
+        ]);
+    }
+
+    /**
      * @Route("/data", name="data_story", methods={"GET"})
      */
     public function readStory(): Response
@@ -60,7 +72,9 @@ class StoryController extends AbstractController
             ];
         }
 
-        return new JsonResponse($result);
+        return new JsonResponse($result, 200, [
+            'Access-Control-Allow-Origin' => '*'
+        ]);
     }
 
     /**
@@ -79,6 +93,37 @@ class StoryController extends AbstractController
             'User' => $story->getUser(),
             'genre' => $story->getGenre(),
             'published' => $story->getPublished()
+        ]);
+    }
+
+    /**
+     * @Route("/dataFromUser", name="data_story_from_user", methods={"GET"})
+     */
+    public function readStoryFromUser(): Response
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+
+        $story = $this->storyRepository->findBy(['User' => $user], ['publicationDate' => 'ASC']);
+
+        $result = [];
+
+        foreach ($story as $story) {
+            $result[] = [
+                'id' => $story->getId(),
+                'title' => $story->getTitle(),
+                'content' => $story->getContent(),
+                'publicationDate' => $story->getPublicationDate(),
+                'User' => $story->getUser()->getNickName(),
+                'genre' => $story->getGenre(),
+                'published' => $story->getPublished(),
+
+                'userLogin' => $user->getNickName()
+            ];
+        }
+
+        return new JsonResponse($result, 200, [
+            'Access-Control-Allow-Origin' => '*'
         ]);
     }
 
