@@ -56,8 +56,8 @@ class CommentController extends AbstractController
                 'content' => $comment->getContent(),
                 'publicationDate' => $comment->getPublicationDate(),
                 'score' => $comment->getScore(),
-                'User' => $comment->getUser(),
-                'Story ' => $comment->getStory(),
+                'User' => $comment->getUser()->getNickName(),
+                'Story ' => $comment->getStory()->getTitle(),
             ];
         }
 

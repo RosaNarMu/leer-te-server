@@ -50,7 +50,7 @@ class StoryController extends AbstractController
     /**
      * @Route("/data", name="data_story", methods={"GET"})
      */
-    public function readStory(): Response
+    public function readStory(UserRepository $userRepository): Response
     {
         $story = $this->storyRepository->findBy([], ['publicationDate' => 'ASC']);
 
@@ -62,7 +62,7 @@ class StoryController extends AbstractController
                 'title' => $story->getTitle(),
                 'content' => $story->getContent(),
                 'publicationDate' => $story->getPublicationDate(),
-                'User' => $story->getUser(),
+                'User' => $story->getUser()->getNickName(),
                 'genre' => $story->getGenre(),
                 'published' => $story->getPublished()
             ];
@@ -84,7 +84,7 @@ class StoryController extends AbstractController
             'title' => $story->getTitle(),
             'content' => $story->getContent(),
             'publicationDate' => $story->getPublicationDate(),
-            'User' => $story->getUser(),
+            'User' => $story->getUser()->getNickName(),
             'genre' => $story->getGenre(),
             'published' => $story->getPublished()
         ]);
