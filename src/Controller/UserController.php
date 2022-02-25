@@ -42,6 +42,14 @@ class UserController extends AbstractController
     }
 
     /**
+     * @Route("", methods={"OPTIONS"})
+     */
+    public function options(): Response
+    {
+        return new Response('');
+    }
+
+    /**
      * @Route("/data", name="data_user", methods={"GET"})
      */
     public function readUser(): Response
@@ -62,6 +70,30 @@ class UserController extends AbstractController
 
         return new JsonResponse($result);
     }
+
+    /**
+     * @Route("/dataFromUser", name="data_user_from_user", methods={"GET"})
+     */
+
+    public function UserFromUser(): Response
+    {
+        /** @var User $user */
+        $userLogin = $this->getUser();
+
+        $user = $this->userRepository->findBy(['id' => $userLogin]);
+
+        $result = [];
+
+        foreach ($user as $user) {
+            $result[] = [
+                'id' => $user->getId(),
+                'userLogin' => $userLogin->getNickName()
+            ];
+        }
+
+        return new JsonResponse($result);
+    }
+
 
     /**
      * @Route("/add", name="add_user", methods={"POST"})
