@@ -80,7 +80,7 @@ class UserController extends AbstractController
         /** @var User $user */
         $userLogin = $this->getUser();
 
-        $user = $this->userRepository->findBy(['id' => $userLogin]);
+        $user = $this->userRepository->findBy(['id' => $userLogin], []);
 
         $result = [];
 

@@ -52,7 +52,7 @@ class StoryController extends AbstractController
      */
     public function readStory(UserRepository $userRepository): Response
     {
-        $story = $this->storyRepository->findBy([], ['publicationDate' => 'ASC']);
+        $story = $this->storyRepository->findBy(['published' => true], ['publicationDate' => 'ASC']);
 
         $result = [];
 
@@ -128,7 +128,9 @@ class StoryController extends AbstractController
     {
         $content = json_decode($request->getContent(), true);
 
-        $user = $userRepository->findOneBy(['nickName' => $content['user']]);
+        $user = $this->getUser();
+
+        /* $user = $userRepository->findOneBy(['nickName' => $content['user']]); */
 
         $story = new Story();
 
