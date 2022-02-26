@@ -52,7 +52,7 @@ class StoryController extends AbstractController
      */
     public function readStory(UserRepository $userRepository): Response
     {
-        $story = $this->storyRepository->findBy(['published' => true], ['publicationDate' => 'ASC']);
+        $story = $this->storyRepository->findBy(['published' => 1], [/* 'publicationDate' => 'ASC' */]);
 
         $result = [];
 
@@ -98,7 +98,7 @@ class StoryController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        $story = $this->storyRepository->findBy(['User' => $user], ['publicationDate' => 'ASC']);
+        $story = $this->storyRepository->findBy(['User' => $user], ['e.publicationDate' => 'ASC']);
 
         $result = [];
 
@@ -138,8 +138,8 @@ class StoryController extends AbstractController
 
         $story->setContent($content['content']);
 
-        $date = new \DateTime('@' . strtotime('now'));
-        $story->setPublicationDate($date);
+        /*  $date = new \DateTime('@' . strtotime('now')); */
+        $story->setPublicationDate(new \DateTime());
 
         $story->setUser($user);
 
