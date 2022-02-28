@@ -46,7 +46,7 @@ class CommentController extends AbstractController
      */
     public function readComment(): Response
     {
-        $comment = $this->commentRepository->findBy([], ['publicationDate' => 'ASC']);
+        $comment = $this->commentRepository->findBy([], []);
 
         $result = [];
 
@@ -63,6 +63,30 @@ class CommentController extends AbstractController
 
         return new JsonResponse($result);
     }
+
+    /**
+     * @Route("/detail/{id}", name="detail_comment", methods={"GET"})
+     */
+
+    public function detailStory(Request $request, $id): Response
+    {
+        $comment = $this->commentRepository->findBy(['Story' => $id], []);
+
+        $result = [];
+
+        foreach ($comment as $comment) {
+            $result[] = [
+                'id' => $comment->getId(),
+                'content' => $comment->getContent(),
+                'publicationDate' => $comment->getPublicationDate(),
+                'score' => $comment->getScore(),
+                'User' => $comment->getUser()->getNickName(),
+                'Story ' => $comment->getStory()->getId(),
+            ];
+        }
+        return new JsonResponse($result);
+    }
+
 
     /**
      * @Route("/add", name="add_comment", methods={"POST"})
