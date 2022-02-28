@@ -57,6 +57,7 @@ class CommentController extends AbstractController
                 'publicationDate' => $comment->getPublicationDate(),
                 'score' => $comment->getScore(),
                 'User' => $comment->getUser()->getNickName(),
+                'UserId' => $comment->getUser()->getId(),
                 'Story ' => $comment->getStory()->getTitle(),
             ];
         }
@@ -70,6 +71,9 @@ class CommentController extends AbstractController
 
     public function detailStory(Request $request, $id): Response
     {
+        /** @var User $user */
+        $user = $this->getUser();
+
         $comment = $this->commentRepository->findBy(['Story' => $id], []);
 
         $result = [];
@@ -81,6 +85,8 @@ class CommentController extends AbstractController
                 'publicationDate' => $comment->getPublicationDate(),
                 'score' => $comment->getScore(),
                 'User' => $comment->getUser()->getNickName(),
+                'UserIdComment' => $comment->getUser()->getId(),
+                'UserIdLogin' => $user->getId(),
                 'Story ' => $comment->getStory()->getId(),
             ];
         }
