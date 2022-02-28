@@ -96,9 +96,9 @@ class CommentController extends AbstractController
     {
         $content = json_decode($request->getContent(), true);
 
-        $user = $userRepository->findOneBy(['nickName' => $content['user']]);
+        $user = $this->getUser();
 
-        $story = $storyRepository->findOneBy(['title' => $content['story']]);
+        $story = $storyRepository->findOneBy(['id' => $content['story']]);
 
         $comment = new Comment();
 
