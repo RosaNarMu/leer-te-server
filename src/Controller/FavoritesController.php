@@ -79,6 +79,7 @@ class FavoritesController extends AbstractController
         foreach ($favorites as $favorites) {
             $result[] = [
                 'Story' => $favorites->getStory()->getId(),
+                'id' => $favorites->getId()
             ];
         }
 
@@ -97,9 +98,12 @@ class FavoritesController extends AbstractController
     {
         $content = json_decode($request->getContent(), true);
 
-        $user = $userRepository->findOneBy(['nickName' => $content['user']]);
+        /** @var User $user */
+        $user = $this->getUser();
 
-        $story = $storyRepository->findOneBy(['title' => $content['story']]);
+        /*  $user = $userRepository->findOneBy(['id' => $content['user']]); */
+
+        $story = $storyRepository->findOneBy(['id' => $content['story']]);
 
         $favorites = new Favorites();
 
