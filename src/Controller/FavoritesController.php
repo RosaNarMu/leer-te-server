@@ -47,19 +47,47 @@ class FavoritesController extends AbstractController
      */
     public function readFavorites(): Response
     {
-        $favorites = $this->favoritesRepository->findBy([], ['Story' => 'ASC']);
+        $favorites = $this->favoritesRepository->findBy([], []);
 
         $result = [];
 
         foreach ($favorites as $favorites) {
             $result[] = [
-                'User' => $favorites->getUser()->getNickName(),
-                'Story ' => $favorites->getStory()->getTitle(),
+                'User' => $favorites->getUser()->getId(),
+                'Story ' => $favorites->getStory()->getId(),
             ];
         }
 
         return new JsonResponse($result);
     }
+
+    /**
+     * @Route("/data/check/{id}", name="data_check_favorites", methods={"GET"})
+     */
+    public function checkFavorites(Request $request, $id, UserRepository $userRepository, StoryRepository $storyRepository): Response
+    {
+
+        /** @var User $user */
+        $user = $this->getUser();
+
+        $favorites = $this->favoritesRepository->findBy(['Story' => $id], []);
+
+        $result = [];
+
+        foreach ($favorites as $favorites) {
+            $result[] = [
+                'UserIdLogin' => $user->getId(),
+                'User' => $favorites->getUser()->getId(),
+                'Story' => $favorites->getStory()->getId(),
+            ];
+        }
+
+
+        return new JsonResponse(
+            $result
+        );
+    }
+
 
     /**
      * @Route("/add", name="add_favorite", methods={"POST"})
