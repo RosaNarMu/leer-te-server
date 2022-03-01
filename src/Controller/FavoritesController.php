@@ -62,22 +62,22 @@ class FavoritesController extends AbstractController
     }
 
     /**
-     * @Route("/data/check/{id}", name="data_check_favorites", methods={"GET"})
+     * @Route("/data/check", name="data_check_favorites", methods={"GET"})
      */
-    public function checkFavorites(Request $request, $id, UserRepository $userRepository, StoryRepository $storyRepository): Response
+    public function checkFavorites(UserRepository $userRepository, StoryRepository $storyRepository): Response
     {
 
         /** @var User $user */
         $user = $this->getUser();
 
-        $favorites = $this->favoritesRepository->findBy(['Story' => $id], []);
+        $id = $user->getId();
+
+        $favorites = $this->favoritesRepository->findBy(['User' => $id], []);
 
         $result = [];
 
         foreach ($favorites as $favorites) {
             $result[] = [
-                'UserIdLogin' => $user->getId(),
-                'User' => $favorites->getUser()->getId(),
                 'Story' => $favorites->getStory()->getId(),
             ];
         }
