@@ -98,18 +98,40 @@ class StoryController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        $story = $this->storyRepository->findBy(['User' => $user], ['e.publicationDate' => 'ASC']);
+        $story = $this->storyRepository->findBy(['User' => $user], []);
 
         $result = [];
 
         foreach ($story as $story) {
             $result[] = [
                 'id' => $story->getId(),
-                'title' => $story->getTitle(),
-                'content' => $story->getContent(),
-                'publicationDate' => $story->getPublicationDate(),
-                'User' => $story->getUser()->getNickName(),
-                'genre' => $story->getGenre(),
+
+
+                'userLogin' => $user->getNickName()
+            ];
+        }
+
+        return new JsonResponse($result);
+    }
+
+    /**
+     * @Route("/publishedFromUser", name="published_story_from_user", methods={"GET"})
+     */
+    public function publishedFromUser(): Response
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+
+        $story = $this->storyRepository->findBy(['User' => $user, 'published' => true], []);
+
+        $result = [];
+
+        foreach ($story as $story) {
+            $result[] = [
+                'id' => $story->getId(),
+                'StoryTitle' => $story->getTitle(),
+                /*  'StoryAuthor' => $story->getUser()->getNickName(), */
+                'StoryGenre' => $story->getGenre(),
                 'published' => $story->getPublished(),
 
                 'userLogin' => $user->getNickName()
@@ -118,6 +140,34 @@ class StoryController extends AbstractController
 
         return new JsonResponse($result);
     }
+
+    /**
+     * @Route("/draftsFromUser", name="drafts_story_from_user", methods={"GET"})
+     */
+    public function draftsFromUser(): Response
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+
+        $story = $this->storyRepository->findBy(['User' => $user, 'published' => false], []);
+
+        $result = [];
+
+        foreach ($story as $story) {
+            $result[] = [
+                'id' => $story->getId(),
+                'StoryTitle' => $story->getTitle(),
+                /*  'StoryAuthor' => $story->getUser()->getNickName(), */
+                'StoryGenre' => $story->getGenre(),
+                'published' => $story->getPublished(),
+
+                'userLogin' => $user->getNickName()
+            ];
+        }
+
+        return new JsonResponse($result);
+    }
+
 
 
     /**
