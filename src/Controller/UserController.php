@@ -145,15 +145,15 @@ class UserController extends AbstractController
         $content = json_decode($request->getContent(), true);
         $user = $this->userRepository->find($id);
 
-        if (isset($content['nickName'])) {
+        if (isset($content['nickName']) && $content['nickName'] != "") {
             $user->setNickName($content['nickName']);
         }
 
-        if (isset($content['email'])) {
+        if (isset($content['email']) && $content['email'] != "") {
             $user->setEmail($content['email']);
         }
 
-        if (isset($content['password'])) {
+        if (isset($content['password']) && $content['password'] != "") {
             $simplePassword = ($content['password']);
             $hashedPassword = $passwordHasher->hashPassword(
                 $user,
@@ -166,9 +166,9 @@ class UserController extends AbstractController
             $user->setGoodReads($content['goodReads']);
         }
 
-        if (isset($content['birthDate'])) {
+        /*  if (isset($content['birthDate'])) {
             $user->setBirthDate(\DateTime::createFromFormat('Y-m-d', $content['birthDate']));
-        }
+        } */
 
         $this->em->flush();
 
