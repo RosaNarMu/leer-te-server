@@ -60,7 +60,7 @@ class FavoritesController extends AbstractController
 
         foreach ($favorites as $favorites) {
             $result[] = [
-                'Story ' => $favorites->getStory()->getId(),
+                'id' => $favorites->getStory()->getId(),
                 'StoryTitle' => $favorites->getStory()->getTitle(),
                 'StoryGenre' => $favorites->getStory()->getGenre(),
 
