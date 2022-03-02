@@ -216,6 +216,8 @@ class StoryController extends AbstractController
      */
     public function update(Request $request, $id, UserRepository $userRepository): Response
     {
+        $user = $this->getUser();
+
         $content = json_decode($request->getContent(), true);
         $story = $this->storyRepository->find($id);
 
@@ -233,7 +235,6 @@ class StoryController extends AbstractController
         }
 
         if (isset($content['user'])) {
-            $user = $userRepository->findOneBy(['nickName' => $content['user']]);
             $story->setUser($user);
         }
 

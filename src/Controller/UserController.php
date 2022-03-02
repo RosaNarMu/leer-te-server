@@ -132,10 +132,16 @@ class UserController extends AbstractController
     }
 
     /**
-     * @Route("/edit/{id}", name="edit_user", methods={"PUT"})
+     * @Route("/edit", name="edit_user", methods={"PUT"})
      */
-    public function update(Request $request, $id, UserPasswordHasherInterface $passwordHasher): Response
+    public function update(Request $request, UserPasswordHasherInterface $passwordHasher): Response
     {
+
+        /** @var User $user */
+        $userLogin = $this->getUser();
+
+        $id = $userLogin->getId();
+
         $content = json_decode($request->getContent(), true);
         $user = $this->userRepository->find($id);
 
@@ -170,11 +176,16 @@ class UserController extends AbstractController
     }
 
     /**
-     * @Route("/delete/{id}", name="delete_user", methods={"DELETE"})
+     * @Route("/delete", name="delete_user", methods={"DELETE"})
      */
 
-    public function delete($id): Response
+    public function delete(): Response
     {
+        /** @var User $user */
+        $userLogin = $this->getUser();
+
+        $id = $userLogin->getId();
+
         $user = $this->userRepository->find($id);
         $this->em->remove($user);
         $this->em->flush();
