@@ -238,11 +238,11 @@ class StoryController extends AbstractController
             $story->setUser($user);
         }
 
-        if (isset($content['genre'])) {
+        if (isset($content['genre']) && $content['genre'] != "") {
             $story->setGenre($content['genre']);
         }
 
-        if (isset($content['published'])) {
+        if (isset($content['published']) && $content['published'] != "") {
             $story->setPublished($content['published']);
         }
 
