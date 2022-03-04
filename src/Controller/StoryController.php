@@ -176,26 +176,33 @@ class StoryController extends AbstractController
 
     public function addStory(Request $request, UserRepository $userRepository): Response
     {
-        $content = json_decode($request->getContent(), true);
+        /* $content = json_decode($request->getContent(), true); */
 
         $user = $this->getUser();
 
         /* $user = $userRepository->findOneBy(['nickName' => $content['user']]); */
 
+        $title = $request->get('title');
+        $content = $request->get('content');
+        $genre = $request->get('genre');
+        $published = $request->get('published');
+        $coverImage = $request->get('coverImage');
+
         $story = new Story();
 
-        $story->setTitle($content['title']);
+        $story->setTitle($title);
 
-        $story->setContent($content['content']);
+        $story->setContent($content);
 
-        /*  $date = new \DateTime('@' . strtotime('now')); */
         $story->setPublicationDate(new \DateTime());
 
         $story->setUser($user);
 
-        $story->setGenre($content['genre']);
+        $story->setGenre($genre);
 
-        $story->setPublished($content['published']);
+        $story->setPublished($published);
+
+        $story->setCoverImage($coverImage);
 
         $this->em->persist($story);
 

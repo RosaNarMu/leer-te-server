@@ -60,6 +60,11 @@ class Story
      */
     private $title;
 
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $coverImage;
+
     public function __construct()
     {
         $this->comments = new ArrayCollection();
@@ -199,6 +204,18 @@ class Story
     public function setTitle(string $title): self
     {
         $this->title = $title;
+
+        return $this;
+    }
+
+    public function getCoverImage(): ?string
+    {
+        return $this->coverImage;
+    }
+
+    public function setCoverImage(?string $coverImage): self
+    {
+        $this->coverImage = $coverImage;
 
         return $this;
     }
