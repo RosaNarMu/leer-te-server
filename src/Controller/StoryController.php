@@ -86,7 +86,8 @@ class StoryController extends AbstractController
             'publicationDate' => $story->getPublicationDate(),
             'User' => $story->getUser()->getNickName(),
             'genre' => $story->getGenre(),
-            'published' => $story->getPublished()
+            'published' => $story->getPublished(),
+            'coverImage' => $story->getCoverImage()
         ]);
     }
 
