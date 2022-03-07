@@ -194,8 +194,6 @@ class StoryController extends AbstractController
         $genre = $request->get('genre');
         $published = $request->get('published');
         /*   $coverImage = $request->file('coverImage'); */
-
-        $uploadedFile = $request->files->get('file');
         $coverImage = $request->files->get('coverImage');
 
 
@@ -216,7 +214,9 @@ class StoryController extends AbstractController
 
         //base64encode. //base datos = (text blob)
 
-        $story->setCoverImage($coverImage);
+
+
+        $story->setCoverImage(base64_encode($coverImage));
 
         $this->em->persist($story);
 
