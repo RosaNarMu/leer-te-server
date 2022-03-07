@@ -177,7 +177,13 @@ class StoryController extends AbstractController
 
     public function addStory(Request $request, UserRepository $userRepository): Response
     {
-        /* $content = json_decode($request->getContent(), true); */
+        $datos = $request->request->all();
+        $imagen = $request->files->get('coverImage');
+
+
+        //liberria php imagenes = GD 
+        //Image::make($imagen);
+        //Image->save() ->resize();
 
         $user = $this->getUser();
 
@@ -187,7 +193,12 @@ class StoryController extends AbstractController
         $content = $request->get('content');
         $genre = $request->get('genre');
         $published = $request->get('published');
-        $coverImage = $request->get('coverImage');
+        /*   $coverImage = $request->file('coverImage'); */
+
+        $uploadedFile = $request->files->get('file');
+        $coverImage = $request->files->get('coverImage');
+
+
 
         $story = new Story();
 
@@ -202,6 +213,8 @@ class StoryController extends AbstractController
         $story->setGenre($genre);
 
         $story->setPublished($published);
+
+        //base64encode. //base datos = (text blob)
 
         $story->setCoverImage($coverImage);
 
