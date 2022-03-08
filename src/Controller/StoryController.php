@@ -178,12 +178,16 @@ class StoryController extends AbstractController
     public function addStory(Request $request, UserRepository $userRepository): Response
     {
         $datos = $request->request->all();
-        $imagen = $request->files->get('coverImage');
+        /* $imagen = $request->files->get('coverImage'); */
 
 
         //liberria php imagenes = GD 
         //Image::make($imagen);
         //Image->save() ->resize();
+
+        $im = imagecreatetruecolor(120, 20);
+        $text_color = imagecolorallocate($im, 233, 14, 91);
+        imagestring($im, 1, 5, 5,  "A Simple Text String", $text_color);
 
         $user = $this->getUser();
 
@@ -196,7 +200,7 @@ class StoryController extends AbstractController
         /*   $coverImage = $request->file('coverImage'); */
         $coverImage = $request->files->get('coverImage');
 
-
+        $imaGd = imagepng($coverImage);
 
         $story = new Story();
 
@@ -216,7 +220,7 @@ class StoryController extends AbstractController
 
 
 
-        $story->setCoverImage(base64_encode($coverImage));
+        $story->setCoverImage(base64_encode($imaGd));
 
         $this->em->persist($story);
 
