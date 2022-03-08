@@ -51,6 +51,7 @@ security:
     access_control:
         - { path: ^/api/login, roles: PUBLIC_ACCESS }
         - { path: /, roles: PUBLIC_ACCESS, methods: [OPTIONS] }
+        - { path: ^/user/edit, roles: ROLE_ADMIN }
         #- { path: ^/story, roles: IS_AUTHENTICATED_FULLY }
         # - { path: ^/admin, roles:  IS_AUTHENTICATED_FULLY }
 
