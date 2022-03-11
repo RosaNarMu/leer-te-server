@@ -83,6 +83,12 @@
     "friendsofphp/proxy-manager-lts": {
         "version": "v1.0.5"
     },
+    "guzzlehttp/psr7": {
+        "version": "2.1.0"
+    },
+    "intervention/image": {
+        "version": "2.7.1"
+    },
     "laminas/laminas-code": {
         "version": "4.5.1"
     },
@@ -102,6 +108,18 @@
         },
         "files": [
             "config/packages/lexik_jwt_authentication.yaml"
+        ]
+    },
+    "mael/intervention-image-bundle": {
+        "version": "1.0",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "master",
+            "version": "1.0",
+            "ref": "92cfe8be16c732d0bacebc47b68ebdb784bcba0a"
+        },
+        "files": [
+            "config/packages/mael_intervention_image.yaml"
         ]
     },
     "monolog/monolog": {
@@ -146,11 +164,20 @@
     "psr/event-dispatcher": {
         "version": "1.0.0"
     },
+    "psr/http-factory": {
+        "version": "1.0.1"
+    },
+    "psr/http-message": {
+        "version": "1.0.1"
+    },
     "psr/link": {
         "version": "1.0.0"
     },
     "psr/log": {
         "version": "1.1.4"
+    },
+    "ralouphie/getallheaders": {
+        "version": "3.0.3"
     },
     "sensio/framework-extra-bundle": {
         "version": "6.2",

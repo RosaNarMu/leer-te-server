@@ -22,8 +22,11 @@ use App\Repository\CategoriaRepository;
 use App\Repository\EntradaRepository;
 use App\Repository\StoryRepository;
 use DateTimeInterface;
+use Mael\InterventionImageBundle\MaelInterventionImageBundle;
+use Mael\InterventionImageBundle\MaelInterventionImageManager;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\String\Slugger\AsciiSlugger;
+
 
 /**
  * @Route("story")
@@ -33,11 +36,13 @@ class StoryController extends AbstractController
 {
     private $em;
     private $storyRepository;
+    private $image;
 
-    public function __construct(EntityManagerInterface $em, StoryRepository $storyRepository)
+    public function __construct(EntityManagerInterface $em, StoryRepository $storyRepository, MaelInterventionImageManager $image)
     {
         $this->em = $em;
         $this->storyRepository = $storyRepository;
+        $this->image = $image;
     }
 
     /**
@@ -181,41 +186,21 @@ class StoryController extends AbstractController
     public function addStory(Request $request, UserRepository $userRepository): Response
     {
         $datos = $request->request->all();
-        /* $imagen = $request->files->get('coverImage'); */
-
-
-        //liberria php imagenes = GD 
-        //Image::make($imagen);
-        //Image->save() ->resize();
-
-        /*   $im = imagecreatetruecolor(120, 20);
-        $text_color = imagecolorallocate($im, 233, 14, 91);
-        imagestring($im, 1, 5, 5,  "A Simple Text String", $text_color); */
 
         $user = $this->getUser();
-
-        /* $user = $userRepository->findOneBy(['nickName' => $content['user']]); */
 
         $title = $request->get('title');
         $content = $request->get('content');
         $genre = $request->get('genre');
         $published = $request->get('published');
-        $coverImage = $request->files->get('coverImage');  /* AAA */
-        /*  $imaGd = imagepng($coverImage); */
-        //$im = imagecreatefrompng($coverImage->getPathname());
-        //$image = imagepng($im);
+        $coverImage = $request->files->get('coverImage');
 
-        //file_put_contents('var/www/html/leer-te-server/public/imagenes/' + $coverImage->getClientOriginalName(), $image);
 
-        $dir = 'var/www/html/leer-te-server/public/imagenes/';
+        $renderedImag = $this->image->make($coverImage);
 
-        $someNewFilename = 'newName';
+        $renderedImag->save('/var/www/html/images/' . $coverImage->getClientOriginalName());
 
-        $img = $coverImage->getData()->move($dir, $someNewFilename);
-
-        dump("volacando");
-        die;
-
+        $imag64 = base64_encode($renderedImag);
 
 
         $isActive = $request->get('isActive');
@@ -234,9 +219,7 @@ class StoryController extends AbstractController
 
         $story->setPublished($published);
 
-        //base64encode. //base datos = (text blob)
-
-        $story->setCoverImage($imaGd); /* AAA */
+        $story->setCoverImage($imag64);
 
         $story->setIsActive($isActive);
 
@@ -255,39 +238,42 @@ class StoryController extends AbstractController
     }
 
     /**
-     * @Route("/edit/{id}", name="edit_story", methods={"PUT"})
+     * @Route("/edit/{id}", name="edit_story", methods={"POST"})
      */
     public function update(Request $request, $id, UserRepository $userRepository): Response
     {
         $user = $this->getUser();
 
-        $content = json_decode($request->getContent(), true);
+
         $story = $this->storyRepository->find($id);
 
-        if (isset($content['title'])) {
-            $story->setTitle($content['title']);
+        $title = $request->get('title');
+        $story->setTitle($title);
+
+        $content = $request->get('content');
+        $story->setContent($content);
+
+        $date = new \DateTime('@' . strtotime('now'));
+        $story->setPublicationDate($date);
+
+        $genre = $request->get('genre');
+        $story->setGenre($genre);
+
+        $published = $request->get('published');
+        $story->setPublished($published);
+
+
+        $coverImage = $request->files->get('coverImage');
+
+        if ($coverImage) {
+            $renderedImag = $this->image->make($coverImage);
+            $renderedImag->save('/var/www/html/images/' . $coverImage->getClientOriginalName());
+
+            $imag64 = base64_encode($renderedImag);
+            $story->setCoverImage($imag64);
         }
 
-        if (isset($content['content'])) {
-            $story->setContent($content['content']);
-        }
 
-        if (isset($content['date'])) {
-            $date = new \DateTime('@' . strtotime('now'));
-            $story->setPublicationDate($date);
-        }
-
-        if (isset($content['user'])) {
-            $story->setUser($user);
-        }
-
-        if (isset($content['genre']) && $content['genre'] != "") {
-            $story->setGenre($content['genre']);
-        }
-
-        if (isset($content['published']) && $content['published'] != "") {
-            $story->setPublished($content['published']);
-        }
 
         $this->em->flush();
 
