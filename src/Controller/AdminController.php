@@ -89,7 +89,7 @@ class AdminController extends AbstractController
      */
     public function adminStory(StoryRepository $storyRepository): Response
     {
-        $story = $this->storyRepository->findBy(['published' => 1], []);
+        $story = $this->storyRepository->findBy(['published' => 1, 'isActive' => true], []);
 
         $result = [];
 
@@ -123,7 +123,6 @@ class AdminController extends AbstractController
                 'id' => $user->getId(),
                 'nickName' => $user->getNickName(),
                 'email' => $user->getEmail(),
-                'GoodReads' => $user->getGoodReads()
             ];
         }
 
@@ -146,7 +145,7 @@ class AdminController extends AbstractController
                 'publicationDate' => $comment->getPublicationDate(),
                 'score' => $comment->getScore(),
                 'User' => $comment->getUser()->getNickName(),
-                'Story ' => $comment->getStory()->getTitle(),
+                'Story' => $comment->getStory()->getTitle(),
             ];
         }
 
@@ -160,7 +159,9 @@ class AdminController extends AbstractController
     public function deleteStory($id): Response
     {
         $story = $this->storyRepository->find($id);
-        $this->em->remove($story);
+
+        $story->setIsActive(false);
+
         $this->em->flush();
         return new JsonResponse(['respuesta' => 'ok']);
     }

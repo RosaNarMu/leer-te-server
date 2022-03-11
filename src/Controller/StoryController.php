@@ -22,6 +22,7 @@ use App\Repository\CategoriaRepository;
 use App\Repository\EntradaRepository;
 use App\Repository\StoryRepository;
 use DateTimeInterface;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\String\Slugger\AsciiSlugger;
 
 /**
@@ -52,7 +53,7 @@ class StoryController extends AbstractController
      */
     public function readStory(UserRepository $userRepository): Response
     {
-        $story = $this->storyRepository->findBy(['published' => 1], [/* 'publicationDate' => 'ASC' */]);
+        $story = $this->storyRepository->findBy(['published' => true, 'isActive' => true], [/* 'publicationDate' => 'ASC' */]);
 
         $result = [];
 
@@ -99,7 +100,7 @@ class StoryController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        $story = $this->storyRepository->findBy(['User' => $user], []);
+        $story = $this->storyRepository->findBy(['User' => $user,], []);
 
         $result = [];
 
@@ -123,7 +124,7 @@ class StoryController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        $story = $this->storyRepository->findBy(['User' => $user, 'published' => true], []);
+        $story = $this->storyRepository->findBy(['User' => $user, 'published' => true, 'isActive' => true], []);
 
         $result = [];
 
@@ -134,8 +135,10 @@ class StoryController extends AbstractController
                 /*  'StoryAuthor' => $story->getUser()->getNickName(), */
                 'StoryGenre' => $story->getGenre(),
                 'published' => $story->getPublished(),
+                'isActive' => $story->getIsActive(),
 
-                'userLogin' => $user->getNickName()
+                'userLogin' => $user->getNickName(),
+
             ];
         }
 
@@ -185,9 +188,9 @@ class StoryController extends AbstractController
         //Image::make($imagen);
         //Image->save() ->resize();
 
-        $im = imagecreatetruecolor(120, 20);
+        /*   $im = imagecreatetruecolor(120, 20);
         $text_color = imagecolorallocate($im, 233, 14, 91);
-        imagestring($im, 1, 5, 5,  "A Simple Text String", $text_color);
+        imagestring($im, 1, 5, 5,  "A Simple Text String", $text_color); */
 
         $user = $this->getUser();
 
@@ -197,10 +200,25 @@ class StoryController extends AbstractController
         $content = $request->get('content');
         $genre = $request->get('genre');
         $published = $request->get('published');
-        /*   $coverImage = $request->file('coverImage'); */
-        $coverImage = $request->files->get('coverImage');
+        $coverImage = $request->files->get('coverImage');  /* AAA */
+        /*  $imaGd = imagepng($coverImage); */
+        //$im = imagecreatefrompng($coverImage->getPathname());
+        //$image = imagepng($im);
 
-        $imaGd = imagepng($coverImage);
+        //file_put_contents('var/www/html/leer-te-server/public/imagenes/' + $coverImage->getClientOriginalName(), $image);
+
+        $dir = 'var/www/html/leer-te-server/public/imagenes/';
+
+        $someNewFilename = 'newName';
+
+        $img = $coverImage->getData()->move($dir, $someNewFilename);
+
+        dump("volacando");
+        die;
+
+
+
+        $isActive = $request->get('isActive');
 
         $story = new Story();
 
@@ -218,9 +236,9 @@ class StoryController extends AbstractController
 
         //base64encode. //base datos = (text blob)
 
+        $story->setCoverImage($imaGd); /* AAA */
 
-
-        $story->setCoverImage(base64_encode($imaGd));
+        $story->setIsActive($isActive);
 
         $this->em->persist($story);
 
@@ -283,7 +301,9 @@ class StoryController extends AbstractController
     public function delete($id): Response
     {
         $story = $this->storyRepository->find($id);
-        $this->em->remove($story);
+
+        $story->setIsActive(false);
+
         $this->em->flush();
         return new JsonResponse(['respuesta' => 'ok']);
     }
