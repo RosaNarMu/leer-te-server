@@ -70,7 +70,8 @@ class StoryController extends AbstractController
                 'publicationDate' => $story->getPublicationDate(),
                 'User' => $story->getUser()->getNickName(),
                 'genre' => $story->getGenre(),
-                'published' => $story->getPublished()
+                'published' => $story->getPublished(),
+                'coverImage' => $story->getCoverImage()
             ];
         }
 
@@ -194,9 +195,6 @@ class StoryController extends AbstractController
         $genre = $request->get('genre');
         $published = $request->get('published');
         $coverImage = $request->files->get('coverImage');
-
-
-
 
         $isActive = $request->get('isActive');
 

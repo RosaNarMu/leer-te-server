@@ -63,6 +63,7 @@ class FavoritesController extends AbstractController
                 'id' => $favorites->getStory()->getId(),
                 'StoryTitle' => $favorites->getStory()->getTitle(),
                 'StoryGenre' => $favorites->getStory()->getGenre(),
+                'StoryCoverImage' => $favorites->getStory()->getCoverImage()
 
                 /*   'StoryAuthore' => $story->getUser()->getNickName(), */
 
