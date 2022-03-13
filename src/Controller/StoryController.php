@@ -196,11 +196,6 @@ class StoryController extends AbstractController
         $coverImage = $request->files->get('coverImage');
 
 
-        $renderedImag = $this->image->make($coverImage);
-
-        $renderedImag->save('/var/www/html/images/' . $coverImage->getClientOriginalName());
-
-        $imag64 = base64_encode($renderedImag);
 
 
         $isActive = $request->get('isActive');
@@ -219,7 +214,13 @@ class StoryController extends AbstractController
 
         $story->setPublished($published);
 
-        $story->setCoverImage($imag64);
+        if ($coverImage) {
+            $renderedImag = $this->image->make($coverImage);
+            $renderedImag->save('/var/www/html/images/' . $coverImage->getClientOriginalName());
+
+            $imag64 = base64_encode($renderedImag);
+            $story->setCoverImage($imag64);
+        }
 
         $story->setIsActive($isActive);
 
