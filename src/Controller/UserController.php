@@ -128,10 +128,6 @@ class UserController extends AbstractController
             $user->setPassword($hashedPassword);
         }
 
-        if (isset($content['goodReads'])) {
-            $user->setGoodReads($content['goodReads']);
-        }
-
         $this->em->flush();
 
         return new JsonResponse(['respuesta' => 'ok']);
