@@ -60,8 +60,6 @@ security:
         - { path: ^/story/edit, roles: ROLE_USER }
         - { path: ^/story/delete, roles: ROLE_USER }
 
-        #- { path: ^/story, roles: IS_AUTHENTICATED_FULLY }
-        # - { path: ^/admin, roles:  IS_AUTHENTICATED_FULLY }
 
 when@test:
     security:

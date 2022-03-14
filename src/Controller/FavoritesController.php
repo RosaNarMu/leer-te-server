@@ -8,23 +8,11 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\ORM\EntityManagerInterface;
-
 use App\Entity\User;
 use App\Repository\UserRepository;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoder;
-use Symfony\Component\Security\Core\Validator\Constraints\UserPassword;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasher;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-
-use App\Entity\Entrada;
 use App\Entity\Favorites;
-use App\Entity\Story;
-use App\Repository\CategoriaRepository;
-use App\Repository\EntradaRepository;
 use App\Repository\FavoritesRepository;
 use App\Repository\StoryRepository;
-use DateTimeInterface;
-use Symfony\Component\String\Slugger\AsciiSlugger;
 
 /**
  * @Route("favorites")
@@ -56,20 +44,12 @@ class FavoritesController extends AbstractController
 
         $result = [];
 
-        /*   $story = $storyRepository->findById(['id' => 'Story'])->getUser()->getNickname(); */
-
         foreach ($favorites as $favorites) {
             $result[] = [
                 'id' => $favorites->getStory()->getId(),
                 'StoryTitle' => $favorites->getStory()->getTitle(),
                 'StoryGenre' => $favorites->getStory()->getGenre(),
                 'coverImage' => $favorites->getStory()->getCoverImage()
-
-                /*   'StoryAuthore' => $story->getUser()->getNickName(), */
-
-                /* 'UserLogged' => $user->getNickName() */
-
-
             ];
         }
 
@@ -98,7 +78,6 @@ class FavoritesController extends AbstractController
             ];
         }
 
-
         return new JsonResponse(
             $result
         );
@@ -116,8 +95,6 @@ class FavoritesController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        /*  $user = $userRepository->findOneBy(['id' => $content['user']]); */
-
         $story = $storyRepository->findOneBy(['id' => $content['story']]);
 
         $favorites = new Favorites();
@@ -132,10 +109,8 @@ class FavoritesController extends AbstractController
 
         return new JsonResponse(
             [
-                'result' => 'ok',
                 'code' => 200,
                 'content' => $content
-
             ]
         );
     }
@@ -148,6 +123,8 @@ class FavoritesController extends AbstractController
         $favorites = $this->favoritesRepository->find($id);
         $this->em->remove($favorites);
         $this->em->flush();
-        return new JsonResponse(['respuesta' => 'ok']);
+        return new JsonResponse([
+            'code' => 200
+        ]);
     }
 }

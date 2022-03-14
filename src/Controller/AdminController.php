@@ -8,23 +8,11 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\ORM\EntityManagerInterface;
-
 use App\Entity\User;
 use App\Repository\UserRepository;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoder;
-use Symfony\Component\Security\Core\Validator\Constraints\UserPassword;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasher;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-
-use App\Entity\Entrada;
-use App\Repository\CategoriaRepository;
 use App\Repository\CommentRepository;
-use App\Repository\EntradaRepository;
 use App\Repository\StoryRepository;
-use DateTime;
-use DateTimeInterface;
-use DateTimeZone;
-use Symfony\Component\String\Slugger\AsciiSlugger;
 
 
 /**
@@ -75,11 +63,8 @@ class AdminController extends AbstractController
 
         return new JsonResponse(
             [
-                'result' => 'ok',
                 'code' => 200,
-                'content' => $content,
-                'hashed' => $hashedPassword
-
+                'content' => $content
             ]
         );
     }
@@ -163,7 +148,9 @@ class AdminController extends AbstractController
         $story->setIsActive(false);
 
         $this->em->flush();
-        return new JsonResponse(['respuesta' => 'ok']);
+        return new JsonResponse([
+            'code' => 200
+        ]);
     }
 
     /**
@@ -175,7 +162,9 @@ class AdminController extends AbstractController
         $user = $this->userRepository->find($id);
         $this->em->remove($user);
         $this->em->flush();
-        return new JsonResponse(['respuesta' => 'ok']);
+        return new JsonResponse([
+            'code' => 200
+        ]);
     }
 
     /**
@@ -187,6 +176,8 @@ class AdminController extends AbstractController
         $comment = $this->commentRepository->find($id);
         $this->em->remove($comment);
         $this->em->flush();
-        return new JsonResponse(['respuesta' => 'ok']);
+        return new JsonResponse([
+            'code' => 200
+        ]);
     }
 }

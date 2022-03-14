@@ -8,25 +8,11 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\ORM\EntityManagerInterface;
-
 use App\Entity\User;
 use App\Repository\UserRepository;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoder;
-use Symfony\Component\Security\Core\Validator\Constraints\UserPassword;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasher;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-
-use App\Entity\Entrada;
 use App\Entity\Story;
-use App\Repository\CategoriaRepository;
-use App\Repository\EntradaRepository;
 use App\Repository\StoryRepository;
-use DateTimeInterface;
-use Mael\InterventionImageBundle\MaelInterventionImageBundle;
 use Mael\InterventionImageBundle\MaelInterventionImageManager;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Symfony\Component\String\Slugger\AsciiSlugger;
-
 
 /**
  * @Route("story")
@@ -58,7 +44,7 @@ class StoryController extends AbstractController
      */
     public function readStory(UserRepository $userRepository): Response
     {
-        $story = $this->storyRepository->findBy(['published' => true, 'isActive' => true], [/* 'publicationDate' => 'ASC' */]);
+        $story = $this->storyRepository->findBy(['published' => true, 'isActive' => true], []);
 
         $result = [];
 
@@ -99,30 +85,6 @@ class StoryController extends AbstractController
     }
 
     /**
-     * @Route("/dataFromUser", name="data_story_from_user", methods={"GET"})
-     */
-    public function readStoryFromUser(): Response
-    {
-        /** @var User $user */
-        $user = $this->getUser();
-
-        $story = $this->storyRepository->findBy(['User' => $user,], []);
-
-        $result = [];
-
-        foreach ($story as $story) {
-            $result[] = [
-                'id' => $story->getId(),
-
-
-                'userLogin' => $user->getNickName()
-            ];
-        }
-
-        return new JsonResponse($result);
-    }
-
-    /**
      * @Route("/publishedFromUser", name="published_story_from_user", methods={"GET"})
      */
     public function publishedFromUser(): Response
@@ -138,14 +100,11 @@ class StoryController extends AbstractController
             $result[] = [
                 'id' => $story->getId(),
                 'StoryTitle' => $story->getTitle(),
-                /*  'StoryAuthor' => $story->getUser()->getNickName(), */
                 'StoryGenre' => $story->getGenre(),
                 'published' => $story->getPublished(),
                 'isActive' => $story->getIsActive(),
                 'coverImage' => $story->getCoverImage(),
-
                 'userLogin' => $user->getNickName(),
-
             ];
         }
 
@@ -168,18 +127,15 @@ class StoryController extends AbstractController
             $result[] = [
                 'id' => $story->getId(),
                 'StoryTitle' => $story->getTitle(),
-                /*  'StoryAuthor' => $story->getUser()->getNickName(), */
                 'StoryGenre' => $story->getGenre(),
                 'published' => $story->getPublished(),
                 'coverImage' => $story->getCoverImage(),
-
                 'userLogin' => $user->getNickName()
             ];
         }
 
         return new JsonResponse($result);
     }
-
 
 
     /**
@@ -197,7 +153,6 @@ class StoryController extends AbstractController
         $genre = $request->get('genre');
         $published = $request->get('published');
         $coverImage = $request->files->get('coverImage');
-
         $isActive = $request->get('isActive');
 
         $story = new Story();
@@ -230,10 +185,8 @@ class StoryController extends AbstractController
 
         return new JsonResponse(
             [
-                'result' => 'ok',
                 'code' => 200,
                 'content' => $content
-
             ]
         );
     }
@@ -278,7 +231,10 @@ class StoryController extends AbstractController
 
         $this->em->flush();
 
-        return new JsonResponse(['respuesta' => 'ok']);
+        return new JsonResponse([
+            'code' => 200,
+            'content' => $content
+        ]);
     }
 
     /**
@@ -292,6 +248,6 @@ class StoryController extends AbstractController
         $story->setIsActive(false);
 
         $this->em->flush();
-        return new JsonResponse(['respuesta' => 'ok']);
+        return new JsonResponse(['code' => 200]);
     }
 }

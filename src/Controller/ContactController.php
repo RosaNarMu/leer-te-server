@@ -9,22 +9,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\ORM\EntityManagerInterface;
-
-use App\Entity\User;
-use App\Repository\UserRepository;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoder;
-use Symfony\Component\Security\Core\Validator\Constraints\UserPassword;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasher;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-
-use App\Entity\Entrada;
-use App\Entity\Story;
-use App\Repository\CategoriaRepository;
 use App\Repository\ContactRepository;
-use App\Repository\EntradaRepository;
-use App\Repository\StoryRepository;
-use DateTimeInterface;
-use Symfony\Component\String\Slugger\AsciiSlugger;
 
 /**
  * @Route("contact")
