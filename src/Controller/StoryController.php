@@ -142,6 +142,7 @@ class StoryController extends AbstractController
                 'StoryGenre' => $story->getGenre(),
                 'published' => $story->getPublished(),
                 'isActive' => $story->getIsActive(),
+                'coverImage' => $story->getCoverImage(),
 
                 'userLogin' => $user->getNickName(),
 
@@ -170,6 +171,7 @@ class StoryController extends AbstractController
                 /*  'StoryAuthor' => $story->getUser()->getNickName(), */
                 'StoryGenre' => $story->getGenre(),
                 'published' => $story->getPublished(),
+                'coverImage' => $story->getCoverImage(),
 
                 'userLogin' => $user->getNickName()
             ];
