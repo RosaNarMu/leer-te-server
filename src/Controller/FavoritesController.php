@@ -40,7 +40,7 @@ class FavoritesController extends AbstractController
 
         $id = $user->getId();
 
-        $favorites = $this->favoritesRepository->findBy(['User' => $id,  'published' => true], []);
+        $favorites = $this->favoritesRepository->findBy(['User' => $id], []);
 
         $result = [];
 
